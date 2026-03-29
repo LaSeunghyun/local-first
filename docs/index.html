@@ -17,8 +17,8 @@ body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSyst
 a{color:var(--ac);text-decoration:none}
 a:hover{text-decoration:underline}
 .c{max-width:1100px;margin:0 auto;padding:0 24px}
-s+s{border-top:1px solid var(--br)}
-s{padding:72px 0}
+section+section{border-top:1px solid var(--br)}
+section{padding:72px 0}
 h2{font-size:1.8rem;font-weight:700;margin-bottom:10px}
 /* Nav */
 nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);padding:14px 0}
@@ -114,7 +114,7 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 @keyframes fadeIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:translateX(0)}}
-@media(max-width:640px){s{padding:52px 0}.hero{padding:72px 0 52px}.nl{display:none}pre{font-size:.72rem;padding:14px}.af{min-width:auto;flex-direction:column;gap:4px}.aco{flex-direction:row}.acl{width:2px;height:28px;background:linear-gradient(to bottom,var(--br),var(--ac),var(--br))}}
+@media(max-width:640px){section{padding:52px 0}.hero{padding:72px 0 52px}.nl{display:none}pre{font-size:.72rem;padding:14px}.af{min-width:auto;flex-direction:column;gap:4px}.aco{flex-direction:row}.acl{width:2px;height:28px;background:linear-gradient(to bottom,var(--br),var(--ac),var(--br))}}
 </style>
 </head>
 <body>
@@ -132,7 +132,7 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
   </div>
 </nav>
 
-<s class="hero">
+<sectionclass="hero">
   <div class="c">
     <div class="badge">Offline-first &middot; Real-time sync &middot; Zero conflict code</div>
     <h1>Build apps that<br><span>work everywhere</span></h1>
@@ -149,9 +149,9 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
       <span class="bx">TypeScript</span>
     </div>
   </div>
-</s>
+</section>
 
-<s class="demo">
+<sectionclass="demo">
   <div class="c">
     <h2>Sync happens automatically</h2>
     <p class="ds">Write locally. Changes propagate to every connected client in real time.</p>
@@ -175,9 +175,9 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
       </div>
     </div>
   </div>
-</s>
+</section>
 
-<s id="features">
+<sectionid="features">
   <div class="c">
     <h2>Everything you need. Nothing you don't.</h2>
     <p style="color:var(--mu);margin-bottom:40px">A complete local-first stack in three packages.</p>
@@ -190,9 +190,9 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
       <div class="fc"><div class="fi">&#128274;</div><h3>Secure by default</h3><p>Token auth, per-client rate limiting, prototype pollution protection, and HLC drift detection.</p></div>
     </div>
   </div>
-</s>
+</section>
 
-<s id="quickstart" class="cs">
+<sectionid="quickstart" class="cs">
   <div class="c">
     <h2>Simple API. Powerful defaults.</h2>
     <p style="color:var(--mu);margin-bottom:40px">Get started in minutes. No schema migrations, no resolvers, no boilerplate.</p>
@@ -241,9 +241,9 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
   <span class="kw">return</span> <span class="id">&lt;</span><span class="ty">StoreProvider</span> <span class="id">store={store}&gt;&lt;</span><span class="ty">TodoApp</span> <span class="id">/&gt;&lt;/</span><span class="ty">StoreProvider</span><span class="id">&gt;;</span>
 <span class="id">}</span></pre>
   </div>
-</s>
+</section>
 
-<s id="how-it-works">
+<sectionid="how-it-works">
   <div class="c">
     <h2>How it works</h2>
     <p style="color:var(--mu);margin-bottom:40px">Three simple steps, zero configuration.</p>
@@ -265,9 +265,9 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
       </div>
     </div>
   </div>
-</s>
+</section>
 
-<s id="compare">
+<sectionid="compare">
   <div class="c">
     <h2>Why local-first?</h2>
     <p style="color:var(--mu);margin-bottom:36px">Compared to building sync yourself or using other libraries.</p>
@@ -288,9 +288,9 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
       </table>
     </div>
   </div>
-</s>
+</section>
 
-<s class="su">
+<sectionclass="su">
   <div class="c">
     <h2>Stay updated</h2>
     <p>Get notified about new releases, guides, and roadmap progress.</p>
@@ -299,7 +299,7 @@ footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var
       <button type="submit">Subscribe</button>
     </form>
   </div>
-</s>
+</section>
 
 <footer>
   <div class="c">
