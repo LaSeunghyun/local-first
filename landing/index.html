@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>local-first — Offline-first data engine with automatic sync</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--br:#2a2a2a;
+--tx:#e8e8e8;--mu:#888;--ac:#3b82f6;--acd:#1d4ed8;
+--gn:#22c55e;--cb:#0d1117;--r:8px;
+--mono:'JetBrains Mono','Fira Code',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--ac);text-decoration:none}
+a:hover{text-decoration:underline}
+.c{max-width:1100px;margin:0 auto;padding:0 24px}
+s+s{border-top:1px solid var(--br)}
+s{padding:72px 0}
+h2{font-size:1.8rem;font-weight:700;margin-bottom:10px}
+/* Nav */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);padding:14px 0}
+.ni{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 24px}
+.logo{font-weight:700;font-size:1.1rem;color:var(--tx)}.logo span{color:var(--ac)}
+.nl{display:flex;gap:20px;list-style:none}
+.nl a{color:var(--mu);font-size:.9rem;transition:color .2s}
+.nl a:hover{color:var(--tx);text-decoration:none}
+.btn{display:inline-flex;align-items:center;padding:10px 20px;border-radius:var(--r);font-size:.9rem;font-weight:600;transition:all .2s;cursor:pointer;border:none}
+.bp{background:var(--ac);color:#fff}.bp:hover{background:var(--acd);text-decoration:none;transform:translateY(-1px)}
+.bs{background:transparent;color:var(--tx);border:1px solid var(--br)}.bs:hover{border-color:var(--ac);color:var(--ac);text-decoration:none}
+.nav-cta{padding:8px 16px;font-size:.85rem}
+/* Hero */
+.hero{padding:110px 0 72px;text-align:center}
+.badge{display:inline-block;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--ac);padding:4px 14px;border-radius:20px;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-size:clamp(2.2rem,6vw,4.2rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:18px}
+.hero h1 span{background:linear-gradient(135deg,var(--ac),#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.15rem;color:var(--mu);max-width:540px;margin:0 auto 36px}
+.ha{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.badges{display:flex;gap:8px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+.bx{background:var(--bg3);border:1px solid var(--br);padding:3px 10px;border-radius:4px;font-size:.72rem;color:var(--mu);font-family:var(--mono)}
+/* Demo */
+.demo{background:var(--bg2);text-align:center}
+.demo h2{margin-bottom:8px}
+.ds{color:var(--mu);margin-bottom:48px}
+.dd{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.dv{background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:18px;width:270px;animation:float 4s ease-in-out infinite}
+.dv:last-child{animation-delay:2s}
+.dh{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--br)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gn)}
+.dl{font-size:.78rem;color:var(--mu);font-family:var(--mono)}
+.dst{margin-left:auto;font-size:.68rem;background:rgba(34,197,94,.1);color:var(--gn);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:10px}
+.di{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem}
+.di:last-child{border-bottom:none}
+.dc{width:16px;height:16px;border-radius:3px;border:1px solid var(--br);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+.dc.on{background:var(--ac);border-color:var(--ac)}
+.dn{animation:fadeIn .5s ease-in-out;color:var(--ac)}
+.sa{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--mu)}
+.sl{width:2px;height:56px;background:linear-gradient(to bottom,transparent,var(--ac),transparent);animation:pulse 2s ease-in-out infinite}
+.sbl{font-size:.65rem;color:var(--ac);font-family:var(--mono)}
+@media(min-width:700px){.sa{flex-direction:row}.sl{width:56px;height:2px;background:linear-gradient(to right,transparent,var(--ac),transparent)}}
+/* Features */
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.fc{background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:22px;transition:border-color .2s,transform .2s}
+.fc:hover{border-color:var(--ac);transform:translateY(-2px)}
+.fi{width:34px;height:34px;border-radius:7px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1rem}
+.fc h3{font-size:.95rem;font-weight:600;margin-bottom:5px}
+.fc p{font-size:.83rem;color:var(--mu);line-height:1.5}
+/* Code */
+.cs{background:var(--bg2)}
+pre{background:var(--cb);border:1px solid var(--br);border-radius:0 var(--r) var(--r) var(--r);padding:20px;overflow-x:auto;font-size:.78rem;font-family:var(--mono);line-height:1.7;margin-bottom:36px}
+pre:last-child{margin-bottom:0}
+.ct{background:var(--bg);border:1px solid var(--br);border-bottom:none;display:inline-block;padding:6px 14px;border-radius:6px 6px 0 0;font-size:.75rem;font-family:var(--mono);color:var(--mu)}
+.kw{color:#ff79c6}.fn{color:#50fa7b}.str{color:#f1fa8c}.cm{color:#6272a4}.ty{color:#8be9fd}.num{color:#bd93f9}.op{color:#ff79c6}.id{color:#f8f8f2}
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.step{background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:24px;position:relative}
+.sn{font-size:2.2rem;font-weight:800;color:rgba(59,130,246,.12);position:absolute;top:14px;right:18px;line-height:1;font-family:var(--mono)}
+.step h3{font-size:1rem;font-weight:700;margin-bottom:7px}
+.step p{font-size:.83rem;color:var(--mu);line-height:1.55}
+/* Arch */
+.ad{background:var(--cb);border:1px solid var(--br);border-radius:var(--r);padding:28px 20px;overflow-x:auto;margin-top:40px}
+.af{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;min-width:560px}
+.an{background:var(--bg3);border:1px solid var(--br);border-radius:var(--r);padding:10px 18px;text-align:center;min-width:120px}
+.anl{font-size:.65rem;color:var(--mu);font-family:var(--mono);margin-bottom:3px}
+.ann{font-size:.82rem;font-weight:600}
+.an.ac2{border-color:var(--ac);background:rgba(59,130,246,.05)}.an.ac2 .ann{color:var(--ac)}
+.aco{display:flex;flex-direction:column;align-items:center;padding:0 6px}
+.acl{height:2px;width:44px;background:linear-gradient(to right,var(--br),var(--ac),var(--br))}
+.acb{font-size:.62rem;color:var(--mu);font-family:var(--mono);margin-top:3px;white-space:nowrap}
+/* Compare */
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 14px;border-bottom:1px solid var(--br);font-size:.83rem;text-align:left}
+th{color:var(--mu);font-weight:600;font-size:.76rem}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.y{color:var(--gn);font-weight:700}.n{color:#ef4444;font-weight:700}.p{color:#f59e0b;font-weight:700}
+/* Signup */
+.su{background:var(--bg2);text-align:center}
+.su p{color:var(--mu);margin-bottom:28px}
+.sf{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.sf input{background:var(--bg3);border:1px solid var(--br);color:var(--tx);padding:11px 15px;border-radius:var(--r);font-size:.88rem;width:280px;outline:none;transition:border-color .2s}
+.sf input:focus{border-color:var(--ac)}
+.sf input::placeholder{color:var(--mu)}
+.sf button{background:var(--ac);color:#fff;border:none;padding:11px 22px;border-radius:var(--r);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s}
+.sf button:hover{background:var(--acd)}
+/* Footer */
+footer{border-top:1px solid var(--br);padding:36px 0;text-align:center;color:var(--mu);font-size:.82rem}
+.fl{display:flex;gap:20px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.fl a{color:var(--mu);transition:color .2s}
+.fl a:hover{color:var(--tx);text-decoration:none}
+/* Animations */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:640px){s{padding:52px 0}.hero{padding:72px 0 52px}.nl{display:none}pre{font-size:.72rem;padding:14px}.af{min-width:auto;flex-direction:column;gap:4px}.aco{flex-direction:row}.acl{width:2px;height:28px;background:linear-gradient(to bottom,var(--br),var(--ac),var(--br))}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="ni">
+    <span class="logo">local<span>-first</span></span>
+    <ul class="nl">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#quickstart">Quick Start</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#compare">Compare</a></li>
+    </ul>
+    <a href="#quickstart" class="btn bp nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<s class="hero">
+  <div class="c">
+    <div class="badge">Offline-first &middot; Real-time sync &middot; Zero conflict code</div>
+    <h1>Build apps that<br><span>work everywhere</span></h1>
+    <p>A data engine that keeps your app working offline and syncs automatically when connectivity returns — no conflict resolution code required.</p>
+    <div class="ha">
+      <a href="#quickstart" class="btn bp">Get Started</a>
+      <a href="#" class="btn bs">View on GitHub</a>
+    </div>
+    <div class="badges">
+      <span class="bx">npm i @local-first/store</span>
+      <span class="bx">~20KB core</span>
+      <span class="bx">zero dependencies</span>
+      <span class="bx">MIT</span>
+      <span class="bx">TypeScript</span>
+    </div>
+  </div>
+</s>
+
+<s class="demo">
+  <div class="c">
+    <h2>Sync happens automatically</h2>
+    <p class="ds">Write locally. Changes propagate to every connected client in real time.</p>
+    <div class="dd">
+      <div class="dv">
+        <div class="dh"><div class="dot"></div><span class="dl">Device A</span><span class="dst">synced</span></div>
+        <div class="di"><div class="dc on">&#10003;</div><span>Buy groceries</span></div>
+        <div class="di"><div class="dc"></div><span>Write tests</span></div>
+        <div class="di dn"><div class="dc"></div><span>Ship v1.0 &larr; just added</span></div>
+      </div>
+      <div class="sa">
+        <div class="sl"></div>
+        <span class="sbl">WebSocket</span>
+        <div class="sl"></div>
+      </div>
+      <div class="dv">
+        <div class="dh"><div class="dot"></div><span class="dl">Device B</span><span class="dst">synced</span></div>
+        <div class="di"><div class="dc on">&#10003;</div><span>Buy groceries</span></div>
+        <div class="di"><div class="dc"></div><span>Write tests</span></div>
+        <div class="di dn"><div class="dc"></div><span>Ship v1.0 &larr; received</span></div>
+      </div>
+    </div>
+  </div>
+</s>
+
+<s id="features">
+  <div class="c">
+    <h2>Everything you need. Nothing you don't.</h2>
+    <p style="color:var(--mu);margin-bottom:40px">A complete local-first stack in three packages.</p>
+    <div class="fg">
+      <div class="fc"><div class="fi">&#9679;</div><h3>Offline-first</h3><p>IndexedDB persistence keeps data available with no network. Reads and writes never throw on disconnect.</p></div>
+      <div class="fc"><div class="fi">&#8644;</div><h3>Automatic sync</h3><p>WebSocket relay with exponential backoff reconnect. Operations queue locally and flush when back online.</p></div>
+      <div class="fc"><div class="fi">&#8635;</div><h3>CRDT conflict resolution</h3><p>Last-Writer-Wins per field using Hybrid Logical Clocks. Concurrent edits merge correctly — zero application code.</p></div>
+      <div class="fc"><div class="fi">&#9201;</div><h3>HLC ordering</h3><p>Hybrid Logical Clocks give a total order across all clients without a central time authority.</p></div>
+      <div class="fc"><div class="fi">&#9881;</div><h3>React hooks</h3><p><code>useDoc</code>, <code>useQuery</code>, <code>useMutation</code> built on <code>useSyncExternalStore</code> — concurrent mode safe.</p></div>
+      <div class="fc"><div class="fi">&#128274;</div><h3>Secure by default</h3><p>Token auth, per-client rate limiting, prototype pollution protection, and HLC drift detection.</p></div>
+    </div>
+  </div>
+</s>
+
+<s id="quickstart" class="cs">
+  <div class="c">
+    <h2>Simple API. Powerful defaults.</h2>
+    <p style="color:var(--mu);margin-bottom:40px">Get started in minutes. No schema migrations, no resolvers, no boilerplate.</p>
+    <div class="ct">store.ts</div>
+    <pre><span class="cm">// npm i @local-first/store</span>
+<span class="kw">import</span> <span class="id">{ createStore, IndexedDBAdapter }</span> <span class="kw">from</span> <span class="str">'@local-first/store'</span><span class="id">;</span>
+
+<span class="kw">const</span> <span class="id">store</span> <span class="op">=</span> <span class="fn">createStore</span><span class="id">({</span>
+  <span class="id">name:</span> <span class="str">'my-app'</span><span class="id">,</span>
+  <span class="id">collections:</span> <span class="id">{ todos:</span> <span class="id">{} },</span>
+  <span class="id">storage:</span> <span class="kw">new</span> <span class="ty">IndexedDBAdapter</span><span class="id">(</span><span class="str">'my-app'</span><span class="id">),</span>
+<span class="id">});</span>
+
+<span class="id">store.</span><span class="fn">sync</span><span class="id">(</span><span class="str">'ws://localhost:3000'</span><span class="id">);</span>  <span class="cm">// one line, auto-reconnects</span>
+
+<span class="kw">const</span> <span class="id">todos</span> <span class="op">=</span> <span class="id">store.</span><span class="fn">collection</span><span class="id">&lt;</span><span class="ty">Todo</span><span class="id">&gt;(</span><span class="str">'todos'</span><span class="id">);</span>
+<span class="kw">await</span> <span class="id">todos.</span><span class="fn">put</span><span class="id">({ id:</span> <span class="str">'t1'</span><span class="id">, text:</span> <span class="str">'Ship it'</span><span class="id">, done:</span> <span class="num">false</span> <span class="id">});</span>
+<span class="kw">await</span> <span class="id">todos.</span><span class="fn">update</span><span class="id">(</span><span class="str">'t1'</span><span class="id">, { done:</span> <span class="num">true</span> <span class="id">});</span>
+<span class="kw">const</span> <span class="id">done</span> <span class="op">=</span> <span class="kw">await</span> <span class="id">todos.</span><span class="fn">find</span><span class="id">({ done:</span> <span class="num">true</span> <span class="id">});</span></pre>
+    <div class="ct">TodoApp.tsx</div>
+    <pre><span class="cm">// npm i @local-first/react</span>
+<span class="kw">import</span> <span class="id">{ StoreProvider, useQuery, useMutation }</span> <span class="kw">from</span> <span class="str">'@local-first/react'</span><span class="id">;</span>
+
+<span class="kw">interface</span> <span class="ty">Todo</span> <span class="id">{ text:</span> <span class="ty">string</span><span class="id">; done:</span> <span class="ty">boolean</span><span class="id">; }</span>
+
+<span class="kw">function</span> <span class="fn">TodoApp</span><span class="id">() {</span>
+  <span class="kw">const</span> <span class="id">todos</span> <span class="op">=</span> <span class="fn">useQuery</span><span class="id">&lt;</span><span class="ty">Todo</span><span class="id">&gt;(</span><span class="str">'todos'</span><span class="id">);</span>          <span class="cm">// reactive, no polling</span>
+  <span class="kw">const</span> <span class="id">{ put, update, del }</span> <span class="op">=</span> <span class="fn">useMutation</span><span class="id">&lt;</span><span class="ty">Todo</span><span class="id">&gt;(</span><span class="str">'todos'</span><span class="id">);</span>
+
+  <span class="kw">return</span> <span class="id">(</span>
+    <span class="id">&lt;</span><span class="ty">ul</span><span class="id">&gt;</span>
+      <span class="id">{todos.</span><span class="fn">map</span><span class="id">(t</span> <span class="op">=&gt;</span> <span class="id">(</span>
+        <span class="id">&lt;</span><span class="ty">li</span> <span class="id">key={t.id}&gt;</span>
+          <span class="id">&lt;</span><span class="ty">input</span> <span class="id">type=</span><span class="str">"checkbox"</span> <span class="id">checked={t.data.done}</span>
+            <span class="id">onChange={() =&gt;</span> <span class="fn">update</span><span class="id">(t.id, { done:</span> <span class="op">!</span><span class="id">t.data.done })} /&gt;</span>
+          <span class="id">{t.data.text}</span>
+          <span class="id">&lt;</span><span class="ty">button</span> <span class="id">onClick={() =&gt;</span> <span class="fn">del</span><span class="id">(t.id)}&gt;x&lt;/</span><span class="ty">button</span><span class="id">&gt;</span>
+        <span class="id">&lt;/</span><span class="ty">li</span><span class="id">&gt;</span>
+      <span class="id">))}</span>
+      <span class="id">&lt;</span><span class="ty">button</span> <span class="id">onClick={() =&gt;</span> <span class="fn">put</span><span class="id">({ id:</span> <span class="id">crypto.</span><span class="fn">randomUUID</span><span class="id">(), text:</span> <span class="str">'New todo'</span><span class="id">, done:</span> <span class="num">false</span> <span class="id">})}&gt;Add&lt;/</span><span class="ty">button</span><span class="id">&gt;</span>
+    <span class="id">&lt;/</span><span class="ty">ul</span><span class="id">&gt;</span>
+  <span class="id">);</span>
+<span class="id">}</span>
+
+<span class="kw">export default function</span> <span class="fn">App</span><span class="id">() {</span>
+  <span class="kw">return</span> <span class="id">&lt;</span><span class="ty">StoreProvider</span> <span class="id">store={store}&gt;&lt;</span><span class="ty">TodoApp</span> <span class="id">/&gt;&lt;/</span><span class="ty">StoreProvider</span><span class="id">&gt;;</span>
+<span class="id">}</span></pre>
+  </div>
+</s>
+
+<s id="how-it-works">
+  <div class="c">
+    <h2>How it works</h2>
+    <p style="color:var(--mu);margin-bottom:40px">Three simple steps, zero configuration.</p>
+    <div class="steps">
+      <div class="step"><span class="sn">01</span><h3>Write Locally</h3><p>Every mutation creates an immutable Operation record with an HLC timestamp and is written to IndexedDB immediately. Reads are always local — fast, even offline.</p></div>
+      <div class="step"><span class="sn">02</span><h3>Sync Automatically</h3><p>When online, unsynced operations are pushed to the WebSocket relay. The server deduplicates by operation ID and broadcasts to all other connected clients.</p></div>
+      <div class="step"><span class="sn">03</span><h3>Resolve Conflicts</h3><p>Incoming remote operations are merged using Last-Writer-Wins per field. The operation with the higher HLC wins. Subscribers are notified automatically after merge.</p></div>
+    </div>
+    <div class="ad">
+      <div class="af">
+        <div class="an"><div class="anl">@local-first/store</div><div class="ann">Client A</div></div>
+        <div class="aco"><div class="acl"></div><div class="acb">push ops</div></div>
+        <div class="an ac2"><div class="anl">@local-first/sync-server</div><div class="ann">WebSocket Relay</div></div>
+        <div class="aco"><div class="acl"></div><div class="acb">broadcast</div></div>
+        <div class="an"><div class="anl">@local-first/store</div><div class="ann">Client B</div></div>
+      </div>
+      <div style="margin-top:20px;font-size:.72rem;color:var(--mu);font-family:var(--mono);text-align:center">
+        IndexedDB &rarr; HLC-stamped Op &rarr; Dedup + Broadcast &rarr; LWW Merge &rarr; IndexedDB
+      </div>
+    </div>
+  </div>
+</s>
+
+<s id="compare">
+  <div class="c">
+    <h2>Why local-first?</h2>
+    <p style="color:var(--mu);margin-bottom:36px">Compared to building sync yourself or using other libraries.</p>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr><th>Capability</th><th>local-first</th><th>Roll your own</th><th>TinyBase</th><th>ElectricSQL</th><th>Triplit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Offline reads/writes</td><td><span class="y">Yes</span></td><td><span class="p">Manual</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><td>Automatic conflict resolution</td><td><span class="y">Yes (LWW CRDT)</span></td><td><span class="n">No</span></td><td><span class="p">Partial</span></td><td><span class="y">Yes</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><td>Zero runtime dependencies</td><td><span class="y">Yes</span></td><td><span class="p">Varies</span></td><td><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="n">No</span></td></tr>
+          <tr><td>Bundle size (core)</td><td><span class="y">~20KB</span></td><td><span class="p">Varies</span></td><td><span class="p">~50KB</span></td><td><span class="n">Heavy</span></td><td><span class="p">~40KB</span></td></tr>
+          <tr><td>No backend required</td><td><span class="y">Yes (relay only)</span></td><td><span class="n">No</span></td><td><span class="y">Yes</span></td><td><span class="n">No (Postgres)</span></td><td><span class="n">No</span></td></tr>
+          <tr><td>React hooks included</td><td><span class="y">Yes</span></td><td><span class="n">No</span></td><td><span class="y">Yes</span></td><td><span class="p">Partial</span></td><td><span class="y">Yes</span></td></tr>
+          <tr><td>Self-hostable sync server</td><td><span class="y">Yes</span></td><td><span class="p">Manual</span></td><td><span class="p">Bring your own</span></td><td><span class="p">Managed only</span></td><td><span class="y">Yes</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</s>
+
+<s class="su">
+  <div class="c">
+    <h2>Stay updated</h2>
+    <p>Get notified about new releases, guides, and roadmap progress.</p>
+    <form class="sf" action="#">
+      <input type="email" placeholder="you@example.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</s>
+
+<footer>
+  <div class="c">
+    <div class="fl">
+      <a href="#">GitHub</a>
+      <a href="#">npm</a>
+      <a href="#quickstart">Docs</a>
+      <a href="#">Changelog</a>
+      <a href="#">License (MIT)</a>
+    </div>
+    <div>local-first &mdash; Offline-first data engine with automatic sync</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "local-first-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.2"
+  },
+  "packageManager": "npm@10.9.2"
+}

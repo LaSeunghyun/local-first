@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.turbo/
+*.db
+.env
+.DS_Store
+Thumbs.db
+.omc/
